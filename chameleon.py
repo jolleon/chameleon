@@ -9,11 +9,16 @@ app.url_map.add(Rule('/<path:path>', endpoint='index'))
 response = None
 received_requests = []
 
-USAGE = """usage:
-To configure chameleon, set the X-Chameleon header.
-    PUT: set response
-    GET: retrieve stored requests
-    DELETE: reset stored requests
+USAGE = """Chameleon is a mock server that will respond to any request with a predetermined response. It is configured using HTTP by setting the X-Chameleon header (e.g. "X-Chameleon: true").
+
+    Set a response using PUT:
+        curl localhost:5000 -H "X-Chameleon: true" -X PUT -d '{"body": "abcd", "status_code": 200, "headers":[["Content-Type", "application/json"], ["My-Header", "myvalue"]]}'
+
+    Retrieve stored requests with GET:
+        curl localhost:5000 -H "X-Chameleon: true"
+
+    Reset stored requests with DELETE:
+        curl localhost:5000 -H "X-Chameleon: true" -X DELETE
 """
 @app.endpoint('index')
 def catch_all(path):
@@ -28,6 +33,9 @@ def catch_all(path):
             received_requests = []
             return 'memory wiped', 200
         return USAGE, 400
+
+    if response is None:
+        return "Error: no response configured!\n\n" + USAGE, 400
 
     last_request = {}
     last_request['method'] = request.method
