@@ -45,7 +45,7 @@ def catch_all(path):
     last_request['args'] = request.args.items()
     last_request['headers'] = request.headers.items()
     last_request['cookies'] = request.cookies
-    last_request['body'] = request.form
+    last_request['body'] = request.get_data()
     received_requests.append(last_request)
 
     resp = make_response(response['body'], response['status_code'])
