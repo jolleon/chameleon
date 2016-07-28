@@ -1,3 +1,4 @@
+import os
 import json
 from flask import Flask, request, make_response
 from werkzeug.routing import Rule
@@ -53,4 +54,6 @@ def catch_all(path):
     return resp
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    host = os.environ.get("CHAMELEON_HOST", '0.0.0.0')
+    port = os.environ.get("CHAMELEON_PORT", 5001)
+    app.run(host=host, port=port)
