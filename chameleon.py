@@ -27,6 +27,8 @@ def catch_all(path):
     if request.headers.get('X-Chameleon'):
         if request.method == 'PUT':
             response = request.get_json(force=True)
+            if type(response['body'] != str):
+                response['body'] = json.dumps(response['body'])
             return 'response set', 200
         if request.method == 'GET':
             return json.dumps(received_requests)
