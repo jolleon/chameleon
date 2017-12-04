@@ -21,13 +21,15 @@ USAGE = """Chameleon is a mock server that will respond to any request with a pr
     Reset stored requests with DELETE:
         curl localhost:5000 -H "X-Chameleon: true" -X DELETE
 """
+
+
 @app.endpoint('index')
 def catch_all(path):
     global response, received_requests
     if request.headers.get('X-Chameleon'):
         if request.method == 'PUT':
             response = request.get_json(force=True)
-            if type(response['body'] != str):
+            if type(response['body']) != str:
                 response['body'] = json.dumps(response['body'])
             return 'response set', 200
         if request.method == 'GET':
@@ -40,14 +42,15 @@ def catch_all(path):
     if response is None:
         return "Error: no response configured!\n\n" + USAGE, 400
 
-    last_request = {}
-    last_request['method'] = request.method
-    last_request['path'] = request.path
-    last_request['url'] = request.url
-    last_request['args'] = request.args.items()
-    last_request['headers'] = request.headers.items()
-    last_request['cookies'] = request.cookies
-    last_request['body'] = request.get_data()
+    last_request = {
+        'method': request.method,
+        'path': request.path,
+        'url': request.url,
+        'args': list(request.args.items()),
+        'headers': list(request.headers.items()),
+        'cookies': request.cookies,
+        'body': request.get_data().decode(),
+    }
     received_requests.append(last_request)
 
     resp = make_response(response['body'], response['status_code'])
@@ -57,5 +60,5 @@ def catch_all(path):
 
 if __name__ == '__main__':
     host = os.environ.get("CHAMELEON_HOST", '0.0.0.0')
-    port = os.environ.get("CHAMELEON_PORT", 5001)
+    port = os.environ.get("CHAMELEON_PORT", 5000)
     app.run(host=host, port=port)

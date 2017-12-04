@@ -1,12 +1,6 @@
-FROM alpine:3.4
+FROM python:3.6-alpine
 
 MAINTAINER Jules Olleon <jolleon@gmail.com>
-
-RUN apk add --update \
-    python \
-    python-dev \
-    py-pip \
-  && rm -rf /var/cache/apk/*
 
 RUN pip install virtualenv
 
