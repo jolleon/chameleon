@@ -1,3 +1,7 @@
 .idea
 .cache
+.tox
 __pycache__
+venv
+*.pyc
+ChameleonClient.egg-info/
