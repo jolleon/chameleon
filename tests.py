@@ -3,7 +3,7 @@ import docker
 import pytest
 import requests
 
-from chameleon_client import client
+from chameleon import Chameleon
 
 
 @pytest.fixture(scope='session')
@@ -16,7 +16,7 @@ def chameleon_server():
 
 
 def test_new_server(chameleon_server):
-    c = client.Chameleon()
+    c = Chameleon()
     r = c.get_requests()
     assert r == []
 
@@ -30,7 +30,7 @@ def test_new_server(chameleon_server):
     '{"a": {"b": "cc", "dd": 2}}',
 ])
 def test_client(chameleon_server, payload):
-    c = client.Chameleon()
+    c = Chameleon()
     c.clear_requests()
     c.set_response(200, payload)
 
@@ -57,7 +57,7 @@ def test_client(chameleon_server, payload):
     {"a": {"b": "cc", "dd": 2}},
 ])
 def test_client_json(chameleon_server, payload):
-    c = client.Chameleon()
+    c = Chameleon()
     c.clear_requests()
     c.set_response(200, payload)
 

@@ -8,14 +8,14 @@ from setuptools import setup
 
 setup(
     name='ChameleonClient',
-    version='0.0.0',
+    version='0.0.1',
     url='https://github.com/jolleon/chameleon',
     license='WTFPL',
     author='Jules Olleon',
     author_email='jolleon@gmail.com',
     description=('Simple client for the Chameleon mock server'),
     long_description=__doc__,
-    packages=['chameleon_client'],
+    packages=['chameleon'],
     install_requires=[
         'requests>=2.10.0',
     ],
