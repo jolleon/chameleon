@@ -9,15 +9,14 @@ from chameleon import ChameleonServer
 def chameleon_server():
     server = ChameleonServer(5000)
     time.sleep(1)
-    yield server
+    yield server.make_client()
     server.stop()
 
 
 @pytest.fixture
 def chameleon(chameleon_server):
-    client = chameleon_server.make_client()
-    client.clear_requests()
-    return client
+    chameleon_server.clear_requests()
+    return chameleon_server
 
 
 def test_new_server(chameleon):
