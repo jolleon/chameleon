@@ -1,4 +1,5 @@
 import requests
+import docker
 
 
 class Chameleon:
@@ -51,3 +52,25 @@ class Chameleon:
         (Next call to get_requests would return [] if nothing calls the server in between)
         """
         requests.delete(self.base_uri, headers={'X-Chameleon': 'true'})
+
+
+class ChameleonServer:
+    """
+    Simple Docker wrapper to control the Chameleon server container.
+    """
+
+    def __init__(self, port=5000, version='latest'):
+        self.image = 'jolleon/chameleon:{}'.format(version)
+        self.port = port
+        self.container = None
+
+    def start(self):
+        docker_client = docker.from_env()
+        self.container = docker_client.containers.run(self.image, ports={'{}/tcp'.format(self.port): self.port}, detach=True)
+
+    def stop(self):
+        if self.container is not None:
+            self.container.stop(timeout=0)
+
+    def uri(self):
+        return 'http://localhost:{}'.format(self.port)

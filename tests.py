@@ -1,18 +1,17 @@
 import time
-import docker
 import pytest
 import requests
 
-from chameleon import Chameleon
+from chameleon import Chameleon, ChameleonServer
 
 
 @pytest.fixture(scope='session')
 def chameleon_server():
-    docker_client = docker.from_env()
-    container = docker_client.containers.run('jolleon/chameleon:latest', ports={'5000/tcp': 5000}, detach=True)
+    server = ChameleonServer(5000)
+    server.start()
     time.sleep(1)
-    yield 'http://localhost:5000'
-    container.stop(timeout=0)
+    yield server.uri()
+    server.stop()
 
 
 def test_new_server(chameleon_server):

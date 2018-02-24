@@ -18,6 +18,7 @@ setup(
     packages=['chameleon'],
     install_requires=[
         'requests>=2.10.0',
+        'docker',
     ],
     classifiers=[
         'Environment :: Web Environment',
