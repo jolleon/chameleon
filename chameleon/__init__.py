@@ -2,10 +2,17 @@ import requests
 import docker
 
 
+SERVER_VERSION = 'latest'
+
+
 class Chameleon:
 
     def __init__(self, server_uri='http://localhost:5000'):
-        self.base_uri = server_uri
+        self._base_uri = server_uri
+
+    @property
+    def base_uri(self):
+        return self._base_uri
 
     def set_response(self, status_code, body, headers=None):
         """
@@ -21,7 +28,7 @@ class Chameleon:
             'body': body,
             'headers': headers,
         }
-        requests.put(self.base_uri, json=payload, headers={'X-Chameleon': 'true'})
+        requests.put(self._base_uri, json=payload, headers={'X-Chameleon': 'true'})
 
     def get_requests(self):
         """
@@ -42,7 +49,7 @@ class Chameleon:
           }
         ]
         """
-        r = requests.get(self.base_uri, headers={'X-Chameleon': 'true'})
+        r = requests.get(self._base_uri, headers={'X-Chameleon': 'true'})
         return r.json()
 
     def clear_requests(self):
@@ -51,7 +58,7 @@ class Chameleon:
 
         (Next call to get_requests would return [] if nothing calls the server in between)
         """
-        requests.delete(self.base_uri, headers={'X-Chameleon': 'true'})
+        requests.delete(self._base_uri, headers={'X-Chameleon': 'true'})
 
 
 class ChameleonServer:
@@ -59,18 +66,17 @@ class ChameleonServer:
     Simple Docker wrapper to control the Chameleon server container.
     """
 
-    def __init__(self, port=5000, version='latest'):
+    def __init__(self, port=5000, version=SERVER_VERSION):
         self.image = 'jolleon/chameleon:{}'.format(version)
         self.port = port
-        self.container = None
-
-    def start(self):
         docker_client = docker.from_env()
         self.container = docker_client.containers.run(self.image, ports={'{}/tcp'.format(self.port): self.port}, detach=True)
 
     def stop(self):
-        if self.container is not None:
-            self.container.stop(timeout=0)
+        self.container.stop(timeout=0)
 
     def uri(self):
         return 'http://localhost:{}'.format(self.port)
+
+    def make_client(self):
+        return Chameleon(self.uri())
