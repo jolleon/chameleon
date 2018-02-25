@@ -8,7 +8,7 @@ from setuptools import setup
 
 setup(
     name='ChameleonClient',
-    version='0.0.1',
+    version='0.1.0',
     url='https://github.com/jolleon/chameleon',
     license='WTFPL',
     author='Jules Olleon',
