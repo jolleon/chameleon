@@ -2,7 +2,7 @@ import requests
 import docker
 
 
-SERVER_VERSION = 'latest'
+SERVER_VERSION = '0.0.2'
 
 
 class Chameleon:
